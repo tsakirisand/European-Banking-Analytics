@@ -108,8 +108,8 @@ st.markdown("---")
 st.markdown("### Platform Analytical Modules")
 p_cols = st.columns(3)
 with p_cols[0]:
-    st.markdown("1. **Overview**: Executive European snapshot\n2. **Country Comparison**: Cross-country metric matrix\n3. **Interest Rates**: Mortgage, corporate, and deposit rates\n4. **Loans & Credit**: Outstanding loans & growth")
+    st.markdown("1. **Overview**: Executive European snapshot\n2. **Executive Reports**: Data insights & bar analysis\n3. **Country Comparison**: Cross-country metric matrix\n4. **Interest Rates**: Mortgage, corporate, and deposit rates")
 with p_cols[1]:
-    st.markdown("5. **Deposits**: Household & corporate deposits\n6. **Loans vs Deposits**: Loan-to-Deposit Ratios (LDR)\n7. **Banking Profitability**: ROE & ROA metrics\n8. **Banking Risk**: NPL ratios & capital adequacy")
+    st.markdown("5. **Loans & Credit**: Outstanding loans & growth\n6. **Deposits**: Household & corporate deposits\n7. **Loans vs Deposits**: Loan-to-Deposit Ratios (LDR)\n8. **Banking Profitability**: ROE & ROA metrics")
 with p_cols[2]:
-    st.markdown("9. **Lending Conditions**: Bank Lending Survey (BLS)\n10. **Monetary Policy**: ECB policy rate transmission\n11. **Country Analysis**: Single country deep-dive\n12. **Data Quality & Sources**: Audit logs\n13. **Executive Reports**: Data insights & bar analysis")
+    st.markdown("9. **Banking Risk**: NPL ratios & capital adequacy\n10. **Lending Conditions**: Bank Lending Survey (BLS)\n11. **Monetary Policy**: ECB policy rate transmission\n12. **Country Analysis**: Single country deep-dive\n13. **Data Quality & Sources**: Full traceability & logs")
