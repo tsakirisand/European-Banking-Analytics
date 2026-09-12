@@ -44,10 +44,12 @@ class ObservationSchema(BaseModel):
         return v.strip()
 
 def normalize_period_to_date(period: str, frequency: str) -> Optional[str]:
-    """Converts ECB/Eurostat period formats (YYYY, YYYY-MM, YYYY-Qx) to ISO date YYYY-MM-DD."""
+    """Converts ECB/Eurostat period formats (YYYY, YYYY-MM, YYYY-Qx, YYYY-MM-DD) to ISO date YYYY-MM-DD."""
     p = period.strip()
     try:
-        if re.match(r"^\d{4}$", p):
+        if re.match(r"^\d{4}-\d{2}-\d{2}$", p):
+            return p
+        elif re.match(r"^\d{4}$", p):
             return f"{p}-01-01"
         elif re.match(r"^\d{4}-\d{2}$", p):
             return f"{p}-01"

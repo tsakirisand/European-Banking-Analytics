@@ -13,102 +13,105 @@ class AnalyticsEngine:
 
     def get_interest_rates(self, countries: Optional[List[str]] = None, start_year: int = 2000, end_year: int = 2026) -> pd.DataFrame:
         query = """
-        SELECT r.country_code, c.country_name, c.region, r.indicator_code, i.indicator_name, r.date_key, d.period_date, d.year, r.obs_value, r.unit
+        SELECT r.country_code, c.country_name, c.region, r.indicator_code, i.indicator_name, r.date_key, COALESCE(d.period_date, r.date_key) AS period_date, COALESCE(d.year, CAST(SUBSTR(r.date_key, 1, 4) AS INTEGER)) AS year, r.obs_value, r.unit
         FROM fact_interest_rates r
         JOIN dim_country c ON r.country_code = c.country_code
         JOIN dim_indicator i ON r.indicator_code = i.indicator_code
         LEFT JOIN dim_date d ON r.date_key = d.date_key
-        WHERE (d.year IS NULL OR (d.year >= ? AND d.year <= ?))
+        WHERE (COALESCE(d.year, CAST(SUBSTR(r.date_key, 1, 4) AS INTEGER)) >= ? AND COALESCE(d.year, CAST(SUBSTR(r.date_key, 1, 4) AS INTEGER)) <= ?)
         """
         params = [start_year, end_year]
         if countries:
             placeholders = ",".join(["?"] * len(countries))
             query += f" AND r.country_code IN ({placeholders})"
             params.extend(countries)
-        query += " ORDER BY d.period_date ASC, r.country_code ASC"
+        query += " ORDER BY period_date ASC, r.country_code ASC"
 
         with self.get_connection() as conn:
             return pd.read_sql_query(query, conn, params=params)
 
     def get_loans_and_credit(self, countries: Optional[List[str]] = None, start_year: int = 2000, end_year: int = 2026) -> pd.DataFrame:
         query = """
-        SELECT l.country_code, c.country_name, c.region, l.indicator_code, i.indicator_name, l.date_key, d.period_date, d.year, l.obs_value, l.unit
+        SELECT l.country_code, c.country_name, c.region, l.indicator_code, i.indicator_name, l.date_key, COALESCE(d.period_date, l.date_key) AS period_date, COALESCE(d.year, CAST(SUBSTR(l.date_key, 1, 4) AS INTEGER)) AS year, l.obs_value, l.unit
         FROM fact_loans_deposits l
         JOIN dim_country c ON l.country_code = c.country_code
         JOIN dim_indicator i ON l.indicator_code = i.indicator_code
         LEFT JOIN dim_date d ON l.date_key = d.date_key
-        WHERE (d.year IS NULL OR (d.year >= ? AND d.year <= ?))
+        WHERE (COALESCE(d.year, CAST(SUBSTR(l.date_key, 1, 4) AS INTEGER)) >= ? AND COALESCE(d.year, CAST(SUBSTR(l.date_key, 1, 4) AS INTEGER)) <= ?)
         """
         params = [start_year, end_year]
         if countries:
             placeholders = ",".join(["?"] * len(countries))
             query += f" AND l.country_code IN ({placeholders})"
             params.extend(countries)
-        query += " ORDER BY d.period_date ASC, l.country_code ASC"
+        query += " ORDER BY period_date ASC, l.country_code ASC"
 
         with self.get_connection() as conn:
             return pd.read_sql_query(query, conn, params=params)
 
     def get_macro_context(self, countries: Optional[List[str]] = None, start_year: int = 2000, end_year: int = 2026) -> pd.DataFrame:
         query = """
-        SELECT m.country_code, c.country_name, c.region, m.indicator_code, i.indicator_name, m.date_key, d.period_date, d.year, m.obs_value, m.unit
+        SELECT m.country_code, c.country_name, c.region, m.indicator_code, i.indicator_name, m.date_key, COALESCE(d.period_date, m.date_key) AS period_date, COALESCE(d.year, CAST(SUBSTR(m.date_key, 1, 4) AS INTEGER)) AS year, m.obs_value, m.unit
         FROM fact_macro m
         JOIN dim_country c ON m.country_code = c.country_code
         JOIN dim_indicator i ON m.indicator_code = i.indicator_code
         LEFT JOIN dim_date d ON m.date_key = d.date_key
-        WHERE (d.year IS NULL OR (d.year >= ? AND d.year <= ?))
+        WHERE (COALESCE(d.year, CAST(SUBSTR(m.date_key, 1, 4) AS INTEGER)) >= ? AND COALESCE(d.year, CAST(SUBSTR(m.date_key, 1, 4) AS INTEGER)) <= ?)
         """
         params = [start_year, end_year]
         if countries:
             placeholders = ",".join(["?"] * len(countries))
             query += f" AND m.country_code IN ({placeholders})"
             params.extend(countries)
-        query += " ORDER BY d.period_date ASC, m.country_code ASC"
+        query += " ORDER BY period_date ASC, m.country_code ASC"
 
         with self.get_connection() as conn:
             return pd.read_sql_query(query, conn, params=params)
 
     def get_bls_survey(self, countries: Optional[List[str]] = None, start_year: int = 2000, end_year: int = 2026) -> pd.DataFrame:
         query = """
-        SELECT b.country_code, c.country_name, c.region, b.indicator_code, i.indicator_name, b.date_key, d.period_date, d.year, b.obs_value, b.unit
+        SELECT b.country_code, c.country_name, c.region, b.indicator_code, i.indicator_name, b.date_key, COALESCE(d.period_date, b.date_key) AS period_date, COALESCE(d.year, CAST(SUBSTR(b.date_key, 1, 4) AS INTEGER)) AS year, b.obs_value, b.unit
         FROM fact_lending_survey b
         JOIN dim_country c ON b.country_code = c.country_code
         JOIN dim_indicator i ON b.indicator_code = i.indicator_code
         LEFT JOIN dim_date d ON b.date_key = d.date_key
-        WHERE (d.year IS NULL OR (d.year >= ? AND d.year <= ?))
+        WHERE (COALESCE(d.year, CAST(SUBSTR(b.date_key, 1, 4) AS INTEGER)) >= ? AND COALESCE(d.year, CAST(SUBSTR(b.date_key, 1, 4) AS INTEGER)) <= ?)
         """
         params = [start_year, end_year]
         if countries:
             placeholders = ",".join(["?"] * len(countries))
             query += f" AND b.country_code IN ({placeholders})"
             params.extend(countries)
-        query += " ORDER BY d.period_date ASC, b.country_code ASC"
+        query += " ORDER BY period_date ASC, b.country_code ASC"
 
         with self.get_connection() as conn:
             return pd.read_sql_query(query, conn, params=params)
 
     def get_policy_rates(self) -> pd.DataFrame:
         query = """
-        SELECT r.indicator_code, i.indicator_name, r.date_key, d.period_date, r.obs_value, r.unit
+        SELECT r.indicator_code, i.indicator_name, r.date_key, COALESCE(d.period_date, r.date_key) AS period_date, r.obs_value, r.unit
         FROM fact_interest_rates r
         JOIN dim_indicator i ON r.indicator_code = i.indicator_code
         LEFT JOIN dim_date d ON r.date_key = d.date_key
         WHERE r.indicator_code IN ('ECB_DFR', 'ECB_MRO', 'ECB_MLFR')
-        ORDER BY d.period_date ASC
+        ORDER BY period_date ASC
         """
         with self.get_connection() as conn:
             return pd.read_sql_query(query, conn)
 
     def get_rate_spreads(self, countries: Optional[List[str]] = None) -> pd.DataFrame:
         """Calculates commercial mortgage rate spread over ECB Deposit Facility Rate (DFR)."""
-        df_rates = self.get_interest_rates(countries=countries)
+        df_rates = self.get_interest_rates()
         if df_rates.empty:
             return pd.DataFrame()
 
-        df_dfr = df_rates[df_rates["indicator_code"] == "ECB_DFR"][["date_key", "obs_value"]].rename(columns={"obs_value": "dfr_value"})
+        df_rates["year_month"] = df_rates["period_date"].str.slice(0, 7)
+        df_dfr = df_rates[df_rates["indicator_code"] == "ECB_DFR"].groupby("year_month").last()[["obs_value"]].rename(columns={"obs_value": "dfr_value"})
         df_mortgage = df_rates[df_rates["indicator_code"] == "MIR_MORTGAGE"].copy()
+        if countries:
+            df_mortgage = df_mortgage[df_mortgage["country_code"].isin(countries)]
         
-        merged = pd.merge(df_mortgage, df_dfr, on="date_key", how="inner")
+        merged = pd.merge(df_mortgage, df_dfr, on="year_month", how="inner")
         merged["rate_spread_bp"] = (merged["obs_value"] - merged["dfr_value"]) * 100.0
         return merged
 
