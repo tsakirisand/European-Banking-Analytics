@@ -112,4 +112,4 @@ with p_cols[0]:
 with p_cols[1]:
     st.markdown("5. **Deposits**: Household & corporate deposits\n6. **Loans vs Deposits**: Loan-to-Deposit Ratios (LDR)\n7. **Banking Profitability**: ROE & ROA metrics\n8. **Banking Risk**: NPL ratios & capital adequacy")
 with p_cols[2]:
-    st.markdown("9. **Lending Conditions**: Bank Lending Survey (BLS)\n10. **Monetary Policy**: ECB policy rate transmission\n11. **Country Analysis**: Single country deep-dive\n12. **Data Quality & Sources**: Full traceability & logs")
+    st.markdown("9. **Lending Conditions**: Bank Lending Survey (BLS)\n10. **Monetary Policy**: ECB policy rate transmission\n11. **Country Analysis**: Single country deep-dive\n12. **Data Quality & Sources**: Audit logs\n13. **Executive Reports**: Data insights & bar analysis")

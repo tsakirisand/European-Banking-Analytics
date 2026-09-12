@@ -23,9 +23,18 @@ if not df_loans.empty:
     
     df_filtered = df_loans[df_loans["indicator_name"] == selected_ind]
     if not df_filtered.empty:
-        pivoted = df_filtered.pivot_table(index="period_date", columns="country_code", values="obs_value", aggfunc="first")
-        st.line_chart(pivoted)
-        st.dataframe(pivoted.tail(12), use_container_width=True)
+        tab1, tab2 = st.tabs(["📈 Outstanding Stock Trends (Line Chart)", "📊 Country Credit Breakdown (Bar Chart)"])
+        
+        with tab1:
+            pivoted = df_filtered.pivot_table(index="period_date", columns="country_code", values="obs_value", aggfunc="first")
+            st.line_chart(pivoted)
+            st.dataframe(pivoted.tail(12), use_container_width=True)
+
+        with tab2:
+            st.markdown(f"### Latest {selected_ind} per Country (€ Million)")
+            latest_l = df_filtered.sort_values("period_date").groupby("country_name").last().reset_index()
+            st.bar_chart(latest_l.set_index("country_name")["obs_value"])
+            st.dataframe(latest_l[["country_code", "country_name", "period_date", "obs_value", "unit"]], use_container_width=True)
     else:
         st.info("No credit data for the selected aggregate.")
 else:
