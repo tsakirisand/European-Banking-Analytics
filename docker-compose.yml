@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: european_banking_db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-european_banking}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+  dashboard:
+    build: .
+    container_name: european_banking_dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - DB_TYPE=postgresql
+      - DB_HOST=db
+      - DB_NAME=${POSTGRES_DB:-european_banking}
+      - DB_USER=${POSTGRES_USER:-postgres}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
