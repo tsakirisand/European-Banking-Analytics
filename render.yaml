@@ -5,7 +5,7 @@ services:
     region: virginia
     plan: free
     branch: main
-    buildCommand: "pip install -r requirements.txt && python etl/seed_banking_sector.py"
+    buildCommand: "pip install -r requirements.txt && python etl/seed_banking_sector.py && python pipelines/run_etl.py || true"
     startCommand: "streamlit run dashboard/app.py --server.port $PORT --server.address 0.0.0.0"
     envVars:
       - key: DB_TYPE

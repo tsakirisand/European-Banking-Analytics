@@ -13,6 +13,7 @@ logger = logging.getLogger("DBManager")
 class DBManager:
     def __init__(self, db_path: str = "european_banking_star.db"):
         self.db_path = db_path
+        self._known_date_keys = set()
         self._init_db()
 
     def get_connection(self):
@@ -59,6 +60,8 @@ class DBManager:
             logger.info("Star Schema dimensions seeded successfully.")
 
     def ensure_date_dimension(self, date_key: str, frequency: str):
+        if date_key in self._known_date_keys:
+            return
         p_date = normalize_period_to_date(date_key, frequency)
         year = int(date_key[:4]) if len(date_key) >= 4 and date_key[:4].isdigit() else 2000
         quarter = None
@@ -75,6 +78,7 @@ class DBManager:
         with self.get_connection() as conn:
             conn.execute(sql, (date_key, year, quarter, month, p_date, frequency))
             conn.commit()
+        self._known_date_keys.add(date_key)
 
     def insert_fact_records(self, table_name: str, records: List[Dict[str, Any]]) -> int:
         if not records:
