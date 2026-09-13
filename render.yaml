@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: european-banking-analytics
+    env: python
+    region: virginia
+    plan: free
+    branch: main
+    buildCommand: "pip install -r requirements.txt && python etl/seed_banking_sector.py"
+    startCommand: "streamlit run dashboard/app.py --server.port $PORT --server.address 0.0.0.0"
+    envVars:
+      - key: DB_TYPE
+        value: sqlite
+      - key: DB_PATH
+        value: european_banking_star.db
+      - key: INGESTION_START_YEAR
+        value: 2000
