@@ -1,10 +1,35 @@
+import os
 import sqlite3
 import pandas as pd
 from typing import List, Optional, Dict, Any
 
 class AnalyticsEngine:
-    def __init__(self, db_path: str = "european_banking_star.db"):
+    def __init__(self, db_path: Optional[str] = None):
+        if not db_path or db_path == "european_banking_star.db":
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            db_path = os.path.join(base_dir, "european_banking_star.db")
         self.db_path = db_path
+        self._ensure_db_initialized()
+
+    def _ensure_db_initialized(self):
+        need_seed = False
+        if not os.path.exists(self.db_path) or os.path.getsize(self.db_path) == 0:
+            need_seed = True
+        else:
+            try:
+                conn = sqlite3.connect(self.db_path)
+                cur = conn.cursor()
+                cur.execute("SELECT COUNT(*) FROM dim_country")
+                count = cur.fetchone()[0]
+                conn.close()
+                if count == 0:
+                    need_seed = True
+            except Exception:
+                need_seed = True
+
+        if need_seed:
+            from etl.seed_banking_sector import run_seed
+            run_seed(self.db_path)
 
     def get_connection(self):
         conn = sqlite3.connect(self.db_path)

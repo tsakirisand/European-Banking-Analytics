@@ -11,7 +11,10 @@ from src.ingestion.validator import normalize_period_to_date
 logger = logging.getLogger("DBManager")
 
 class DBManager:
-    def __init__(self, db_path: str = "european_banking_star.db"):
+    def __init__(self, db_path: Optional[str] = None):
+        if not db_path or db_path == "european_banking_star.db":
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            db_path = os.path.join(base_dir, "european_banking_star.db")
         self.db_path = db_path
         self._known_date_keys = set()
         self._init_db()

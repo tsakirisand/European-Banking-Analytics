@@ -37,7 +37,17 @@ if not df_snapshot.empty:
             st.markdown("### Mortgage Rate vs Inflation Rate")
             df_clean = df_snapshot.dropna(subset=["inflation_rate", "mortgage_rate"])
             if not df_clean.empty:
-                st.scatter_chart(df_clean, x="inflation_rate", y="mortgage_rate", color="region")
+                fig_scatter = px.scatter(
+                    df_clean,
+                    x="inflation_rate",
+                    y="mortgage_rate",
+                    color="region",
+                    hover_name="country_name",
+                    labels={"inflation_rate": "HICP Inflation (%)", "mortgage_rate": "Mortgage Rate (%)", "region": "Region"},
+                    title="Mortgage Rate vs Inflation Rate"
+                )
+                fig_scatter.update_layout(margin=dict(l=20, r=20, t=40, b=20))
+                st.plotly_chart(fig_scatter, use_container_width=True)
             else:
                 st.info("No matching inflation & rate pairs for selected countries.")
 
