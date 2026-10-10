@@ -7,7 +7,7 @@ Built strictly with **REAL official APIs** from the **European Central Bank (ECB
 ---
 
 ## 🚀 Live Demo
-🔗 **Public Application URL:** [https://european-banking-analytics.onrender.com](https://european-banking-analytics.onrender.com)
+🔗 **Public Application URL:** [https://european-banking-analytics.streamlit.app](https://european-banking-analytics.streamlit.app)
 
 ---
 
