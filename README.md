@@ -1,3 +1,5 @@
+![European Banking Analytics — European banking data, from official sources to clear insight](assets/banner.svg)
+
 # 🏦 European Banking Analytics
 
 A production-grade, European-first **Data Engineering & Financial Analytics Platform** designed to ingest, validate, model, analyze, and visualize banking sector performance, commercial interest rates, balance sheet aggregates, risk indicators, and monetary policy transmission across **27+ European economies**.
